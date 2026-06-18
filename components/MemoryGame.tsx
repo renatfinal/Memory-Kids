@@ -423,6 +423,17 @@ export default function MemoryGame() {
             ))
           )}
         </div>
+
+        <div className="flex justify-center w-full max-w-3xl pb-8 mt-2">
+          <a
+            href="https://mpago.li/1DNaUgc"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 bg-[#009EE3] text-white px-6 py-4 rounded-2xl font-black uppercase tracking-wider text-sm sm:text-base border-4 border-[#007AB0] shadow-[4px_4px_0px_#007AB0] hover:-translate-y-1 transition-transform"
+          >
+            Seja um apoiador pelo Mercado Pago
+          </a>
+        </div>
       </div>
     );
   }
