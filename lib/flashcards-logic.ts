@@ -8,11 +8,16 @@ export type Flashcard = {
   spokenTextEn: string;
   spokenTextEs: string;
   // For interactive modes
-  options?: string[];
   answer?: string;
   sentencePt?: string;
   sentenceEn?: string;
   sentenceEs?: string;
+  verbOptions?: {
+    pt: string;
+    en: string;
+    es: string;
+    isCorrect: boolean;
+  }[];
 };
 
 export const FLASHCARDS_DATA: Record<FlashcardCategory, Flashcard[]> = {
@@ -76,11 +81,14 @@ export const FLASHCARDS_DATA: Record<FlashcardCategory, Flashcard[]> = {
       sentencePt: 'Eu gosto de _____ no parque.', 
       sentenceEn: 'I like to _____ in the park.', 
       sentenceEs: 'Me gusta _____ en el parque.', 
-      options: ['Correr', 'Pular', 'Dormir'], 
-      answer: 'Correr',
-      spokenTextPt: 'Correr, uma ação muito rápida.', 
-      spokenTextEn: 'Run, a very fast action.', 
-      spokenTextEs: 'Correr, una acción muy rápida.' 
+      verbOptions: [
+        { pt: 'Correr', en: 'Run', es: 'Correr', isCorrect: true },
+        { pt: 'Pular', en: 'Jump', es: 'Saltar', isCorrect: false },
+        { pt: 'Dormir', en: 'Sleep', es: 'Dormir', isCorrect: false }
+      ],
+      spokenTextPt: 'Eu gosto de correr no parque.', 
+      spokenTextEn: 'I like to run in the park.', 
+      spokenTextEs: 'Me gusta correr en el parque.' 
     },
     { 
       id: 'v2', 
@@ -88,11 +96,14 @@ export const FLASHCARDS_DATA: Record<FlashcardCategory, Flashcard[]> = {
       sentencePt: 'Na hora do almoço, eu vou _____.', 
       sentenceEn: 'At lunchtime, I will _____.', 
       sentenceEs: 'A la hora del almuerzo, voy a _____.', 
-      options: ['Comer', 'Voar', 'Cantar'], 
-      answer: 'Comer',
-      spokenTextPt: 'Comer uma comida deliciosa!', 
-      spokenTextEn: 'Eat delicious food!', 
-      spokenTextEs: '¡Comer una comida deliciosa!' 
+      verbOptions: [
+        { pt: 'Cantar', en: 'Sing', es: 'Cantar', isCorrect: false },
+        { pt: 'Comer', en: 'Eat', es: 'Comer', isCorrect: true },
+        { pt: 'Voar', en: 'Fly', es: 'Volar', isCorrect: false }
+      ],
+      spokenTextPt: 'Na hora do almoço, eu vou comer.', 
+      spokenTextEn: 'At lunchtime, I will eat.', 
+      spokenTextEs: 'A la hora del almuerzo, voy a comer.' 
     },
     { 
       id: 'v3', 
@@ -100,11 +111,14 @@ export const FLASHCARDS_DATA: Record<FlashcardCategory, Flashcard[]> = {
       sentencePt: 'Meus amigos chegaram para _____.', 
       sentenceEn: 'My friends arrived to _____.', 
       sentenceEs: 'Mis amigos llegaron para _____.', 
-      options: ['Estudar', 'Brincar', 'Chorar'], 
-      answer: 'Brincar',
-      spokenTextPt: 'Brincar com os amigos.', 
-      spokenTextEn: 'Play with friends.', 
-      spokenTextEs: 'Jugar con los amigos.' 
+      verbOptions: [
+        { pt: 'Estudar', en: 'Study', es: 'Estudiar', isCorrect: false },
+        { pt: 'Chorar', en: 'Cry', es: 'Llorar', isCorrect: false },
+        { pt: 'Brincar', en: 'Play', es: 'Jugar', isCorrect: true }
+      ],
+      spokenTextPt: 'Meus amigos chegaram para brincar.', 
+      spokenTextEn: 'My friends arrived to play.', 
+      spokenTextEs: 'Mis amigos llegaron para jugar.' 
     },
     { 
       id: 'v4', 
@@ -112,11 +126,74 @@ export const FLASHCARDS_DATA: Record<FlashcardCategory, Flashcard[]> = {
       sentencePt: 'À noite, eu vou para a cama _____.', 
       sentenceEn: 'At night, I go to bed to _____.', 
       sentenceEs: 'Por la noche, voy a la cama a _____.', 
-      options: ['Pular', 'Dormir', 'Correr'], 
-      answer: 'Dormir',
-      spokenTextPt: 'Dormir para descansar.', 
-      spokenTextEn: 'Sleep to rest.', 
-      spokenTextEs: 'Dormir para descansar.' 
+      verbOptions: [
+        { pt: 'Dormir', en: 'Sleep', es: 'Dormir', isCorrect: true },
+        { pt: 'Correr', en: 'Run', es: 'Correr', isCorrect: false },
+        { pt: 'Nadar', en: 'Swim', es: 'Nadar', isCorrect: false }
+      ],
+      spokenTextPt: 'À noite, eu vou para a cama dormir.', 
+      spokenTextEn: 'At night, I go to bed to sleep.', 
+      spokenTextEs: 'Por la noche, voy a la cama a dormir.' 
+    },
+    { 
+      id: 'v5', 
+      content: 'LER', 
+      sentencePt: 'Eu sento na cadeira para _____ um livro.', 
+      sentenceEn: 'I sit on the chair to _____ a book.', 
+      sentenceEs: 'Me siento en la silla para _____ un libro.', 
+      verbOptions: [
+        { pt: 'Cozinhar', en: 'Cook', es: 'Cocinar', isCorrect: false },
+        { pt: 'Ler', en: 'Read', es: 'Leer', isCorrect: true },
+        { pt: 'Pular', en: 'Jump', es: 'Saltar', isCorrect: false }
+      ],
+      spokenTextPt: 'Eu sento na cadeira para ler um livro.', 
+      spokenTextEn: 'I sit on the chair to read a book.', 
+      spokenTextEs: 'Me siento en la silla para leer un libro.' 
+    },
+    { 
+      id: 'v6', 
+      content: 'NADAR', 
+      sentencePt: 'No verão, nós gostamos de _____ na piscina.', 
+      sentenceEn: 'In summer, we like to _____ in the pool.', 
+      sentenceEs: 'En verano, nos gusta _____ en la piscina.', 
+      verbOptions: [
+        { pt: 'Voar', en: 'Fly', es: 'Volar', isCorrect: false },
+        { pt: 'Pintar', en: 'Paint', es: 'Pintar', isCorrect: false },
+        { pt: 'Nadar', en: 'Swim', es: 'Nadar', isCorrect: true }
+      ],
+      spokenTextPt: 'No verão, nós gostamos de nadar na piscina.', 
+      spokenTextEn: 'In summer, we like to swim in the pool.', 
+      spokenTextEs: 'En verano, nos gusta nadar en la piscina.' 
+    },
+    { 
+      id: 'v7', 
+      content: 'PINTAR', 
+      sentencePt: 'Vou usar minhas tintas para _____ um quadro.', 
+      sentenceEn: 'I will use my paints to _____ a picture.', 
+      sentenceEs: 'Usaré mis pinturas para _____ un cuadro.', 
+      verbOptions: [
+        { pt: 'Beber', en: 'Drink', es: 'Beber', isCorrect: false },
+        { pt: 'Pintar', en: 'Paint', es: 'Pintar', isCorrect: true },
+        { pt: 'Vestir', en: 'Wear', es: 'Llevar', isCorrect: false }
+      ],
+      spokenTextPt: 'Vou usar minhas tintas para pintar um quadro.', 
+      spokenTextEn: 'I will use my paints to paint a picture.', 
+      spokenTextEs: 'Usaré mis pinturas para pintar un cuadro.' 
+    },
+    { 
+      id: 'v8', 
+      content: 'BEBER', 
+      sentencePt: 'Quando estou com sede, preciso _____ água.', 
+      sentenceEn: 'When I am thirsty, I need to _____ water.', 
+      sentenceEs: 'Cuando tengo sed, necesito _____ agua.', 
+      verbOptions: [
+        { pt: 'Beber', en: 'Drink', es: 'Beber', isCorrect: true },
+        { pt: 'Comer', en: 'Eat', es: 'Comer', isCorrect: false },
+        { pt: 'Cantar', en: 'Sing', es: 'Cantar', isCorrect: false }
+      ],
+      spokenTextPt: 'Quando estou com sede, preciso beber água.', 
+      spokenTextEn: 'When I am thirsty, I need to drink water.', 
+      spokenTextEs: 'Cuando tengo sed, necesito beber agua.' 
     },
   ]
 };

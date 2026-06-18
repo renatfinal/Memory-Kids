@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { THEME_INFO, generateDeck, ThemeType, LangType, DifficultyType, DeckCard } from '@/lib/game-logic';
 import { FLASHCARDS_DATA, FLASHCARD_THEME_INFO, FlashcardCategory, Flashcard } from '@/lib/flashcards-logic';
 import { speakText } from '@/lib/speech';
-import { RefreshCw, ChevronLeft, Volume2, VolumeX, Medal, BookOpen } from 'lucide-react';
+import { RefreshCw, ChevronLeft, Volume2, VolumeX, Medal, BookOpen, Clock } from 'lucide-react';
 
 export default function MemoryGame() {
   const [lang, setLang] = useState<LangType>('pt');
@@ -20,6 +20,8 @@ export default function MemoryGame() {
   const [isLocked, setIsLocked] = useState(false);
   const [moves, setMoves] = useState(0);
   const [soundEnabled, setSoundEnabled] = useState(true);
+  const [timeLeft, setTimeLeft] = useState<number | null>(null);
+  const [isTimerActive, setIsTimerActive] = useState(false);
 
   // Flashcards State
   const [flashcardCategory, setFlashcardCategory] = useState<FlashcardCategory | null>(null);
@@ -52,16 +54,42 @@ export default function MemoryGame() {
     }
   }, [appMode, flashcardCategory]);
 
+  const isVictory = matchedIds.length > 0 && matchedIds.length === deck.length / 2;
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (isTimerActive && timeLeft !== null && timeLeft > 0 && !isVictory) {
+      timer = setInterval(() => {
+        setTimeLeft(prev => {
+          if (prev && prev <= 1) {
+            setIsTimerActive(false);
+            if (soundEnabled) speakText(lang === 'pt' ? 'Tempo Esgotado!' : lang === 'es' ? '¡Tiempo Agotado!' : "Time's Up!", lang);
+            return 0;
+          }
+          return prev ? prev - 1 : 0;
+        });
+      }, 1000);
+    } else if (timeLeft === 0 && !isVictory) {
+       setIsTimerActive(false);
+    } else if (isVictory) {
+       setIsTimerActive(false);
+    }
+    return () => clearInterval(timer);
+  }, [isTimerActive, timeLeft, isVictory, soundEnabled, lang]);
+
   const startNewGame = (t: ThemeType, d: DifficultyType) => {
     setDeck(generateDeck(t, d));
     setFlippedIds([]);
     setMatchedIds([]);
     setMoves(0);
     setIsLocked(false);
+    const initialTime = d === 1 ? 45 : d === 2 ? 60 : 90;
+    setTimeLeft(initialTime);
+    setIsTimerActive(true);
   };
 
   const handleCardClick = (card: DeckCard) => {
-    if (isLocked) return;
+    if (isLocked || timeLeft === 0) return;
     if (flippedIds.includes(card.uniqueId)) return;
     if (matchedIds.includes(card.id)) return;
 
@@ -100,8 +128,6 @@ export default function MemoryGame() {
     speakText(text, lang);
   };
 
-  const isVictory = matchedIds.length > 0 && matchedIds.length === deck.length / 2;
-
   // View: Flashcards Game Screen
   if (appMode === 'flashcards' && flashcardCategory) {
     const cards = FLASHCARDS_DATA[flashcardCategory];
@@ -132,8 +158,8 @@ export default function MemoryGame() {
       }
     };
 
-    const handleVerbOption = (option: string, answer: string) => {
-      if (option === answer) {
+    const handleVerbOption = (isCorrect: boolean) => {
+      if (isCorrect) {
         if (soundEnabled) speakText(lang === 'pt' ? 'Muito bem!' : lang === 'es' ? '¡Muy bien!' : 'Well done!', lang);
         setTimeout(() => {
           setVerbIndex((i) => (i + 1) % cards.length);
@@ -198,17 +224,20 @@ export default function MemoryGame() {
              </div>
              
              <div className="flex flex-col gap-3 w-full">
-               {verbData.options?.map(opt => (
-                 <motion.button
-                   key={opt}
-                   whileHover={{ scale: 1.02 }}
-                   whileTap={{ scale: 0.98 }}
-                   onClick={() => handleVerbOption(opt, verbData.answer || '')}
-                   className="py-4 px-6 rounded-2xl bg-white border-[3px] border-[#4D96FF] text-xl sm:text-2xl font-black text-[#4D96FF] shadow-[4px_4px_0px_#4D96FF] uppercase tracking-wider text-center"
-                 >
-                   {opt}
-                 </motion.button>
-               ))}
+               {verbData.verbOptions?.map((opt, i) => {
+                 const text = lang === 'pt' ? opt.pt : lang === 'es' ? opt.es : opt.en;
+                 return (
+                   <motion.button
+                     key={i}
+                     whileHover={{ scale: 1.02 }}
+                     whileTap={{ scale: 0.98 }}
+                     onClick={() => handleVerbOption(opt.isCorrect)}
+                     className="py-4 px-6 rounded-2xl bg-white border-[3px] border-[#4D96FF] text-xl sm:text-2xl font-black text-[#4D96FF] shadow-[4px_4px_0px_#4D96FF] uppercase tracking-wider text-center"
+                   >
+                     {text}
+                   </motion.button>
+                 );
+               })}
              </div>
           </div>
         );
@@ -418,6 +447,14 @@ export default function MemoryGame() {
         </div>
 
         <div className="flex items-center gap-2">
+          {timeLeft !== null && (
+            <div className={`px-2 sm:px-3 py-1.5 rounded-lg border-2 font-black flex items-center gap-1 shadow-sm transition-colors ${
+              timeLeft <= 10 ? 'border-[#FF6B6B] text-[#FF6B6B] bg-[#FFE0E0] animate-pulse' : 'border-[#4D96FF] text-[#4D96FF] bg-[#E0EFFF]'
+            }`}>
+              <Clock className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="text-sm sm:text-base">{Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}</span>
+            </div>
+          )}
           <button 
             onClick={() => setSoundEnabled(!soundEnabled)} 
             className="p-2 border-2 border-[#4D96FF] bg-white text-[#4D96FF] hover:-translate-y-0.5 shadow-[2px_2px_0px_#4D96FF] rounded-lg transition-transform"
@@ -487,6 +524,58 @@ export default function MemoryGame() {
           })}
         </div>
       </div>
+
+      <AnimatePresence>
+        {(timeLeft === 0 && !isVictory) && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+          >
+            <motion.div 
+              initial={{ scale: 0.8, y: 50, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              transition={{ type: 'spring', bounce: 0.4 }}
+              className="bg-white rounded-[2.5rem] p-8 max-w-sm w-full text-center border-4 border-[#FF6B6B] shadow-[8px_8px_0px_#FF6B6B] relative overflow-hidden"
+            >
+              <div className="absolute -top-10 -right-10 w-40 h-40 bg-red-100 rounded-full blur-3xl opacity-50"></div>
+              <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-orange-100 rounded-full blur-3xl opacity-50"></div>
+              
+              <motion.div 
+                initial={{ rotate: -10, scale: 0 }}
+                animate={{ rotate: 0, scale: 1 }}
+                transition={{ type: 'spring', bounce: 0.6, delay: 0.1 }}
+                className="w-24 h-24 mx-auto bg-[#FFE0E0] border-4 border-[#FF6B6B] rounded-full flex items-center justify-center shadow-[4px_4px_0px_#FF6B6B] mb-6 relative z-10"
+              >
+                <Clock className="w-12 h-12 text-[#FF6B6B]" />
+              </motion.div>
+
+              <h2 className="text-3xl font-black uppercase text-[#FF6B6B] tracking-tight mb-2 relative z-10">
+                {lang === 'pt' ? 'Tempo Esgotado!' : lang === 'es' ? '¡Tiempo Agotado!' : "Time's Up!"}
+              </h2>
+              <p className="text-[#4A4A4A] mb-6 font-bold relative z-10 tracking-wide">
+                {lang === 'pt' ? 'Tente jogar mais rápido.' : lang === 'es' ? 'Intenta jugar más rápido.' : 'Try to play faster.'}
+              </p>
+              
+              <div className="flex flex-col gap-3 relative z-10">
+                  <button 
+                    onClick={() => startNewGame(theme, difficulty)}
+                    className="w-full py-3 border-4 border-[#4D96FF] bg-white text-[#4D96FF] rounded-2xl font-black uppercase text-base shadow-[4px_4px_0px_#4D96FF] hover:-translate-y-1 transition-transform"
+                  >
+                    {lang === 'pt' ? 'Tentar Novamente' : lang === 'es' ? 'Intentar de Nuevo' : 'Try Again'}
+                  </button>
+                  <button 
+                  onClick={() => { setTheme(null); setTimeLeft(null); setIsTimerActive(false); }}
+                  className="w-full py-3 border-4 border-[#E2B300] bg-[#FFD93D] text-[#4A4A4A] rounded-2xl font-black uppercase text-base shadow-[4px_4px_0px_#E2B300] hover:-translate-y-1 transition-transform"
+                >
+                  {lang === 'pt' ? 'Voltar' : lang === 'es' ? 'Volver' : 'Back'}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <AnimatePresence>
         {isVictory && (
