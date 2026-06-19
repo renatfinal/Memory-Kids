@@ -431,7 +431,7 @@ export default function MemoryGame() {
             rel="noopener noreferrer"
             className="flex items-center gap-2 bg-[#009EE3] text-white px-6 py-4 rounded-2xl font-black uppercase tracking-wider text-sm sm:text-base border-4 border-[#007AB0] shadow-[4px_4px_0px_#007AB0] hover:-translate-y-1 transition-transform"
           >
-            Seja um apoiador pelo Mercado Pago
+            Seja um Colaborador desse APP
           </a>
         </div>
       </div>
