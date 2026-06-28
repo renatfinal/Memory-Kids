@@ -73,6 +73,14 @@ export const FLASHCARDS_DATA: Record<FlashcardCategory, Flashcard[]> = {
     { id: 'w3', content: 'S-O-L', subContent: 'SOL', spokenTextPt: 'S O L, forma a palavra Sol', spokenTextEn: 'S U N forms the word Sun', spokenTextEs: 'S O L forma la palabra Sol' },
     { id: 'w4', content: 'B-O-L-A', subContent: 'BOLA', spokenTextPt: 'B O L A, forma a palavra Bola', spokenTextEn: 'B A L L forms the word Ball', spokenTextEs: 'B A L Ó N forma la palabra Balón' },
     { id: 'w5', content: 'C-A-S-A', subContent: 'CASA', spokenTextPt: 'C A S A, forma a palavra Casa', spokenTextEn: 'H O U S E forms the word House', spokenTextEs: 'C A S A forma la palabra Casa' },
+    { id: 'w6', content: 'G-A-T-O', subContent: 'GATO', spokenTextPt: 'G A T O, forma a palavra Gato', spokenTextEn: 'C A T forms the word Cat', spokenTextEs: 'G A T O forma la palabra Gato' },
+    { id: 'w7', content: 'U-V-A', subContent: 'UVA', spokenTextPt: 'U V A, forma a palavra Uva', spokenTextEn: 'G R A P E forms the word Grape', spokenTextEs: 'U V A forma la palabra Uva' },
+    { id: 'w8', content: 'P-I-P-A', subContent: 'PIPA', spokenTextPt: 'P I P A, forma a palavra Pipa', spokenTextEn: 'K I T E forms the word Kite', spokenTextEs: 'C O M E T A forma la palabra Cometa' },
+    { id: 'w9', content: 'D-A-D-O', subContent: 'DADO', spokenTextPt: 'D A D O, forma a palavra Dado', spokenTextEn: 'D I C E forms the word Dice', spokenTextEs: 'D A D O forma la palabra Dado' },
+    { id: 'w10', content: 'F-O-C-A', subContent: 'FOCA', spokenTextPt: 'F O C A, forma a palavra Foca', spokenTextEn: 'S E A L forms the word Seal', spokenTextEs: 'F O C A forma la palabra Foca' },
+    { id: 'w11', content: 'R-A-T-O', subContent: 'RATO', spokenTextPt: 'R A T O, forma a palavra Rato', spokenTextEn: 'R A T forms the word Rat', spokenTextEs: 'R A T Ó N forma la palabra Ratón' },
+    { id: 'w12', content: 'B-O-L-O', subContent: 'BOLO', spokenTextPt: 'B O L O, forma a palavra Bolo', spokenTextEn: 'C A K E forms the word Cake', spokenTextEs: 'P A S T E L forma la palabra Pastel' },
+    { id: 'w13', content: 'T-R-E-M', subContent: 'TREM', spokenTextPt: 'T R E M, forma a palavra Trem', spokenTextEn: 'T R A I N forms the word Train', spokenTextEs: 'T R E N forma la palabra Tren' },
   ],
   verbs: [
     { 

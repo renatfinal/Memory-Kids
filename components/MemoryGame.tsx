@@ -303,23 +303,39 @@ export default function MemoryGame() {
     return (
       <div className="min-h-screen bg-[#FFF9E6] text-[#4A4A4A] font-sans selection:bg-blue-100 flex flex-col items-center py-6 px-4">
         {/* Header (Lang Toggle & Logo Toggle) */}
-        <div className="max-w-4xl w-full flex justify-between items-center mb-6">
-          <button 
-            onClick={() => setAppMode(appMode === 'memory' ? 'flashcards' : 'memory')}
-            className="flex items-center space-x-2 group hover:-translate-y-0.5 transition-transform"
-            title={lang === 'pt' ? 'Mudar Modo' : lang === 'es' ? 'Cambiar Modo' : 'Change Mode'}
-          >
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white text-xl font-black shadow-[3px_3px_0px_rgba(0,0,0,0.2)] transition-colors ${appMode === 'memory' ? 'bg-[#FF6B6B]' : 'bg-[#6BCB77]'}`}>
-              {appMode === 'memory' ? 'M' : <BookOpen className="w-5 h-5 text-white" strokeWidth={3} />}
+        <div className="max-w-4xl w-full flex justify-between items-start mb-4">
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center space-x-2">
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white text-xl font-black shadow-[3px_3px_0px_rgba(0,0,0,0.2)] transition-colors ${appMode === 'memory' ? 'bg-[#FF6B6B]' : 'bg-[#6BCB77]'}`}>
+                {appMode === 'memory' ? 'M' : <BookOpen className="w-5 h-5 text-white" strokeWidth={3} />}
+              </div>
+              <h1 className="text-xl font-black tracking-tight uppercase flex flex-col items-start leading-none">
+                {appMode === 'memory' 
+                  ? <><span className="text-[#FF6B6B]">Memory<span className="text-[#4D96FF]">Kids</span></span><span className="text-[10px] text-gray-400 mt-1">{lang === 'pt' ? 'Modo Jogo' : 'Game Mode'}</span></>
+                  : <><span className="text-[#6BCB77]">Escola<span className="text-[#FFD93D]">Kids</span></span><span className="text-[10px] text-gray-400 mt-1">{lang === 'pt' ? 'Modo Estudo' : 'Study Mode'}</span></>
+                }
+              </h1>
             </div>
-            <h1 className="text-xl font-black tracking-tight uppercase flex flex-col items-start leading-none">
-              {appMode === 'memory' 
-                ? <><span className="text-[#FF6B6B]">Memory<span className="text-[#4D96FF]">Kids</span></span><span className="text-[10px] text-gray-400 mt-1">{lang === 'pt' ? 'Modo Jogo' : 'Game Mode'}</span></>
-                : <><span className="text-[#6BCB77]">Escola<span className="text-[#FFD93D]">Kids</span></span><span className="text-[10px] text-gray-400 mt-1">{lang === 'pt' ? 'Modo Estudo' : 'Study Mode'}</span></>
-              }
-            </h1>
-          </button>
-          <div className="flex bg-gray-100 rounded-full border border-gray-200 p-1 flex-wrap justify-end gap-1">
+            
+            <button 
+              onClick={() => setAppMode(appMode === 'memory' ? 'flashcards' : 'memory')}
+              className="flex items-center gap-1 mt-1 px-3 py-1.5 rounded-lg border-2 border-dashed border-gray-300 bg-white hover:bg-gray-50 text-xs font-bold text-gray-500 uppercase tracking-wider transition-colors shadow-sm"
+              title={lang === 'pt' ? 'Mudar Modo' : lang === 'es' ? 'Cambiar Modo' : 'Change Mode'}
+            >
+              {appMode === 'memory' ? (
+                <>
+                  <BookOpen className="w-3 h-3 text-[#6BCB77]" strokeWidth={3} />
+                  {lang === 'pt' ? 'Ir para Escola Kids' : lang === 'es' ? 'Ir a Escola Kids' : 'Go to Escola Kids'}
+                </>
+              ) : (
+                <>
+                  <span className="text-[#FF6B6B] font-black mr-0.5">M</span>
+                  {lang === 'pt' ? 'Ir para Memory Kids' : lang === 'es' ? 'Ir a Memory Kids' : 'Go to Memory Kids'}
+                </>
+              )}
+            </button>
+          </div>
+          <div className="flex bg-gray-100 rounded-full border border-gray-200 p-1 flex-wrap justify-end gap-1 mt-1">
             <button 
               onClick={() => setLang('pt')} 
               className={`px-3 py-1 rounded-full font-bold transition-all text-xs ${lang === 'pt' ? 'bg-white shadow-sm text-[#4A4A4A]' : 'bg-transparent text-gray-500'}`}
